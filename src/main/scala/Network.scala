@@ -1,13 +1,13 @@
 import scala.util.Random
 
 class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neuron],
-              inputWidth: Int) {
+              inputWidth: Int, var initRate: Double,  var rateSlope: Double) {
 
   //Initializes a network with the specified number of hidden layers + input/output width
   def this(layers: Int, neurons: Int, inputWidth: Int, outputWidth: Int) {
     this(createLayer(neurons, inputWidth)
             +: (1 until layers).map(_ => createLayer(neurons, neurons)),
-      createLayer(outputWidth, neurons), inputWidth)
+      createLayer(outputWidth, neurons), inputWidth, .1, 0)
 
     if (layers <= 0) {
       throw new IllegalArgumentException("Cannot create a network with 0 or less layers")
@@ -46,7 +46,9 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
         var target = Array.fill(this.outputLayer.size)(.2)
         target(label) = .8
 
-        backPropagate(target, input, .1) //TODO- parametrize learning rate, adaptive rates
+        val learnRate = initRate * math.exp(-rateSlope * epoch)
+
+        backPropagate(target, input, learnRate)
       }
     }
   }
