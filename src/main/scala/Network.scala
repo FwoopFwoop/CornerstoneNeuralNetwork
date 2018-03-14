@@ -3,7 +3,7 @@ import scala.util.Random
 class Network(var hiddenLayers: Vector[Vector[Neuron]], var outputLayer: Vector[Neuron],
               inputWidth: Int) {
 
-  //Creates a network with the specified number of hidden layers + input/output width
+  //Initializes a network with the specified number of hidden layers + input/output width
   def this(layers: Int, neurons: Int, inputWidth: Int, outputWidth: Int) {
     this(createLayer(neurons, inputWidth)
             ++ (1 until layers).map(_ => createLayer(neurons, neurons)),
@@ -38,9 +38,10 @@ class Network(var hiddenLayers: Vector[Vector[Neuron]], var outputLayer: Vector[
             .toVector
   }
 
+  //Modifies the weights of the newtwork according to training data
   def train(data: Vector[Vector[Int]], labels: Vector[Int], epochs: Int): Unit = {
-    for(epoch <- 0 to epochs){
-
+    for (epoch <- 0 to epochs) {
+      //TODO
     }
   }
 
@@ -57,5 +58,15 @@ class Network(var hiddenLayers: Vector[Vector[Neuron]], var outputLayer: Vector[
 
     outputLayer.foreach(_.evaluate(hiddenLayers.last.map(_.value)))
 
+  }
+
+  //Calculates the mean square error of the output given the speified target
+  //Throws an exception if the target is not the same size as the output vector
+  def meanSquareError(target: Vector[Double]): Double = {
+    if(outputLayer.size != target.size){
+      throw new IllegalArgumentException("Target vector must be same length as output layer")
+    }
+
+    (outputLayer.map(_.value) zip target).map{case (o, t) => math.pow(t - o , 2)}.sum / target.size
   }
 }
