@@ -109,14 +109,18 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
 
       //Calculate new weights (referencing layer above)
       //Will use the input layer if this is the top hidden layer
+
+      //For each neuron, weight pair
       for ((neuron, resp) <- hiddenLayers(layer) zip hiddenResp(layer)) {
+        //Update the neurons weights
         neuron.updateWeights({
           if (layer == 0) {
             input
           } else {
             hiddenLayers(layer - 1).map(_.value)
           }
-        }.map(_ * resp * learnRate))
+        } //multiply each value of the previous row by responsibility and learn rate
+                .map(_ * resp * learnRate))
       }
     }
 
