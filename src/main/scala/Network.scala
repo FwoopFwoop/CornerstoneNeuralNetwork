@@ -1,7 +1,7 @@
 import scala.util.Random
 
 class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neuron],
-              inputWidth: Int, var initRate: Double, var adaptiveRate: Double) {
+              inputWidth: Int,  initRate: Double,  adaptiveRate: Double) {
 
   if (initRate <= 0 || initRate > 1) {
     throw new IllegalArgumentException("Initial rate must be (0, 1]")
@@ -11,9 +11,15 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
     throw new IllegalArgumentException("Adaptive rate cannot be negative")
   }
 
+  if (inputWidth <= 0) {
+    throw new IllegalArgumentException("Input vectors must have a positive length")
+  }
+
+
   //Initializes a network with the specified number of hidden layers + input/output width
-  def this(layers: Int, neurons: Int, inputWidth: Int, outputWidth: Int) {
-    this(null, null, inputWidth, .1, 0)
+  def this(layers: Int, neurons: Int, inputWidth: Int, outputWidth: Int, rate:Double,
+           adapt:Double) {
+    this(null, null, inputWidth, rate, adapt)
 
     hiddenLayers = createLayer(neurons, inputWidth) +:
             (1 until layers).map(_ => this.createLayer(neurons, neurons)).toArray
@@ -28,13 +34,10 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
       throw new IllegalArgumentException("Hidden layers must have a positive number of neurons")
     }
 
-    if (inputWidth <= 0) {
-      throw new IllegalArgumentException("Input vectors must have a positive length")
-    }
-
     if (outputWidth <= 0) {
       throw new IllegalArgumentException("Output layer must have a positive number of neurons")
     }
+
 
     println("Network created with " + layers + " layers and " + neurons + " neurons")
   }
@@ -53,7 +56,19 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
   //Modifies the weights of the network according to training data
   def train(data: Array[Array[Double]], labels: Array[Int], epochs: Int): Unit = {
     for (epoch <- 0 to epochs) {
+
+      println("Beginning epoch " + epoch)
+
       for ((input, label) <- data zip labels) {
+
+        //println("Input: " + input.foldRight("")((n, s)=> n.toString + " " + s))
+
+        /*
+        println("Weights before: ")
+        println(hiddenLayers.head.foldRight("")((n, s) =>
+          n.weights.foldRight("")((w, s) => w.toString + " " + s) + "\n" + s))
+        */
+
         propagate(input)
 
         var target = Array.fill(this.outputLayer.size)(.2)
@@ -151,13 +166,13 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
   def classify(input: Array[Double]): Int = {
     propagate(input)
 
-    outputLayer.indexOf(outputLayer.map(_.value).max)
+    outputLayer.map(_.value).indexOf(outputLayer.map(_.value).max)
   }
 
   //Returns how many of the test samples the network identifies correctly
   def test(data: Array[Array[Double]], labels: Array[Int]): Double = {
-    var right = 0
-    var wrong = 0
+    var right:Double = 0
+    var wrong:Double = 0
 
     for ((input, label) <- data zip labels) {
       if (classify(input) == label) {
