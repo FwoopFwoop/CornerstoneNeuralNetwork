@@ -35,6 +35,8 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
     if (outputWidth <= 0) {
       throw new IllegalArgumentException("Output layer must have a positive number of neurons")
     }
+
+    println("Network created with " + layers + " layers and " + neurons + " neurons")
   }
 
   //Creates a layer with random weights, with values initialized to 0
@@ -143,6 +145,29 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
     //Evaluate the output layer based on the last hidden layer
     outputLayer.foreach(_.evaluate(hiddenLayers.last.map(_.value)))
 
+  }
+
+  //Returns what the network believes to be the correct label for the given input
+  def classify(input: Array[Double]): Int = {
+    propagate(input)
+
+    outputLayer.indexOf(outputLayer.map(_.value).max)
+  }
+
+  //Returns how many of the test samples the network identifies correctly
+  def test(data: Array[Array[Double]], labels: Array[Int]): Double = {
+    var right = 0
+    var wrong = 0
+
+    for ((input, label) <- data zip labels) {
+      if (classify(input) == label) {
+        right += 1
+      } else {
+        wrong += 1
+      }
+    }
+
+    right / (wrong + right)
   }
 
   //Calculates the mean square error of the output given the speified target
