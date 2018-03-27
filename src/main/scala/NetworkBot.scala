@@ -5,10 +5,10 @@ class NetworkBot(val data: DataSource, val net: Network) {
       new Network(layers, neurons, dataSource.getInputWidth(), dataSource.getOutputWidth(),
         learn, adapt))
 
-    net.train(data.getData(), data.getLabels(), epochs)
+    net.train(data.getTrainingData(), data.getTrainingLabels(), epochs)
 
   }
 
-  def getAccuracy(): Double = net.test(data.getData(), data.getLabels())
+  def getAccuracy(): Double = net.test(data.getTestData(), data.getTestLabels())
 
 }

@@ -3,9 +3,13 @@ trait DataSource {
 
   def getOutputWidth(): Int
 
-  def getData(): Array[Array[Double]]
+  def getTrainingData(): Array[Array[Double]]
 
-  def getLabels(): Array[Int]
+  def getTrainingLabels(): Array[Int]
+
+  def getTestData(): Array[Array[Double]]
+
+  def getTestLabels(): Array[Int]
 
   def getName(label: Int): String
 }
