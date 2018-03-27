@@ -57,17 +57,9 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
   def train(data: Array[Array[Double]], labels: Array[Int], epochs: Int): Unit = {
     for (epoch <- 0 to epochs) {
 
-      println("Beginning epoch " + epoch)
+      println("Entering epoch " + epoch)
 
       for ((input, label) <- data zip labels) {
-
-        //println("Input: " + input.foldRight("")((n, s)=> n.toString + " " + s))
-
-        /*
-        println("Weights before: ")
-        println(hiddenLayers.head.foldRight("")((n, s) =>
-          n.weights.foldRight("")((w, s) => w.toString + " " + s) + "\n" + s))
-        */
 
         propagate(input)
 

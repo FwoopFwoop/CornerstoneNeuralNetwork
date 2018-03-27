@@ -24,11 +24,11 @@ class IrisData extends DataSource {
   }
 
   def filterTest[T](array: Array[T]): mutable.ArraySeq[T] = {
-    array.zipWithIndex.filter(_._2 % 4 == 0).map(_._1)
+    array.zipWithIndex.filter(_._2 % 5 == 0).map(_._1)
   }
 
   def filterTrain[T](array: Array[T]): mutable.ArraySeq[T] = {
-    array.zipWithIndex.filter(_._2 % 4 != 0).map(_._1)
+    array.zipWithIndex.filter(_._2 % 5 != 0).map(_._1)
   }
 
   override def getTrainingData(): Array[Array[Double]] = {
