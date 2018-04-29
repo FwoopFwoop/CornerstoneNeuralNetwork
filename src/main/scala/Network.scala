@@ -1,10 +1,10 @@
 import scala.util.Random
 
 class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neuron],
-              inputWidth: Int,  initRate: Double,  adaptiveRate: Double) {
+              inputWidth: Int, val initRate: Double, val adaptiveRate: Double) {
 
   if (initRate <= 0 || initRate > 1) {
-    throw new IllegalArgumentException("Initial rate must be (0, 1]")
+    throw new IllegalArgumentException("Initial rate must be (0, 1], found " + initRate)
   }
 
   if (adaptiveRate < 0) {
@@ -17,8 +17,8 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
 
 
   //Initializes a network with the specified number of hidden layers + input/output width
-  def this(layers: Int, neurons: Int, inputWidth: Int, outputWidth: Int, rate:Double,
-           adapt:Double) {
+  def this(layers: Int, neurons: Int, inputWidth: Int, outputWidth: Int, rate: Double,
+           adapt: Double) {
     this(null, null, inputWidth, rate, adapt)
 
     hiddenLayers = createLayer(neurons, inputWidth) +:
@@ -57,7 +57,7 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
   def train(data: Array[Array[Double]], labels: Array[Int], epochs: Int): Unit = {
     for (epoch <- 0 to epochs) {
 
-      println("Entering epoch " + epoch)
+      if (epoch % 100 == 0) println("Entering epoch " + epoch)
 
       for ((input, label) <- data zip labels) {
 
@@ -163,8 +163,8 @@ class Network(var hiddenLayers: Array[Array[Neuron]], var outputLayer: Array[Neu
 
   //Returns how many of the test samples the network identifies correctly
   def test(data: Array[Array[Double]], labels: Array[Int]): Double = {
-    var right:Double = 0
-    var wrong:Double = 0
+    var right: Double = 0
+    var wrong: Double = 0
 
     for ((input, label) <- data zip labels) {
       if (classify(input) == label) {

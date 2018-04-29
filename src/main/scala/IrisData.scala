@@ -1,4 +1,5 @@
 import scala.collection.mutable
+import scala.io.Source
 
 class IrisData extends DataSource {
   val labelMap = Map("Iris-setosa" -> 0, "Iris-versicolor" -> 1, "Iris-virginica" -> 2)
@@ -8,8 +9,8 @@ class IrisData extends DataSource {
 
   override def getInputWidth(): Int = 4
 
-  def rawData() = scala.io.Source
-          .fromFile("C:\\Users\\zacha\\OneDrive - Northeastern University\\GE 1502\\NeuralNetwork\\data\\Fisher Iris\\iris.data.txt").getLines().map(_.split(","))
+  def rawData() = Source.fromResource("iris.data.txt").getLines().map(_.split(","))
+
 
   def getInputs(): Array[Array[Double]] = {
     def removeLast[T](arr: Array[T]): Array[T] = {

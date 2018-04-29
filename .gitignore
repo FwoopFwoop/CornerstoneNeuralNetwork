@@ -25,6 +25,7 @@
 
 target/
 .idea/
+project/
 
 # CMake
 cmake-build-debug/
